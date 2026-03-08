@@ -103,6 +103,8 @@ Open `diary_entries.json` and fill it with your entries. Each entry looks like t
 ]
 ```
 
+Use any ai chat bot to create one for your specifiations.
+
 #### Field reference
 
 | Field | Format | Example |
