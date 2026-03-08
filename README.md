@@ -1,6 +1,6 @@
 # 📓 VTU Internship Diary – Auto-fill Bot
 
-> Stop filling diary entries by hand. This bot logs into the [VTU internship portal](https://vtu.internyet.in), picks your date, selects your internship, fills every field, and hits Save — automatically, for every entry in your list.
+> Hate filling diary entries by hand? This bot logs into the [VTU internship portal](https://vtu.internyet.in), picks your date, selects your internship, fills every field, and hits Save — automatically, for every entry in your list.
 
 ---
 
