@@ -1,0 +1,7 @@
+{
+    "internship_keyword": "Gilbarco",
+    "wait_sec": 20,
+    "sleep_page_load": 2.5,
+    "sleep_dropdown": 1.5,
+    "sleep_after_save": 4.0
+}

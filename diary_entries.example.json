@@ -1,0 +1,18 @@
+[
+    {
+        "date": "01 Sep 2025",
+        "work_summary": "Describe what you worked on today.",
+        "hours": "8.0",
+        "learnings": "What did you learn?",
+        "blockers": "None.",
+        "skills": "Python"
+    },
+    {
+        "date": "02 Sep 2025",
+        "work_summary": "Another day, another entry.",
+        "hours": "8.0",
+        "learnings": "More learnings here.",
+        "blockers": "None.",
+        "skills": "Verification & Validations"
+    }
+]

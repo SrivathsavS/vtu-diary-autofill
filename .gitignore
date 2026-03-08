@@ -1,0 +1,22 @@
+# Credentials — NEVER commit these
+.env
+
+# Your personal diary data (use diary_entries.example.json as a template)
+diary_entries.json
+
+# Python virtual environment
+env/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
