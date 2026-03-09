@@ -40,7 +40,9 @@ pip install -r requirements.txt
 ### Step 2 — Add your credentials
 
 ```bash
-cp .env.example .env
+cp .env.example .env    
+
+# windows might use copy instead of cp
 ```
 
 Open `.env` and fill in your VTU portal login:
