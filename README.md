@@ -174,6 +174,21 @@ The bot detected it got logged out and will automatically log back in. Nothing y
 **Elements not loading / bot clicking too fast**
 Increase `sleep_page_load` and `sleep_after_save` in `config.json` (e.g. try `3.5` and `5.0`).
 
+**Portal shows "Something went wrong" or blank page (WSL / headless setups)**
+Selenium's auto-downloaded "Chrome for Testing" may not render the VTU portal correctly. Install the regular Google Chrome browser and point Selenium to it:
+```bash
+# Install Chrome (Debian/Ubuntu/WSL)
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+sudo apt-get install -f -y
+```
+Then add these lines near the top of the browser setup in `autofill_bot.py`:
+```python
+options = webdriver.ChromeOptions()
+options.binary_location = "/usr/bin/google-chrome"   # or wherever Chrome is installed
+driver = webdriver.Chrome(options=options)
+```
+
 **ChromeDriver version mismatch error**
 Install `webdriver-manager` to handle this automatically:
 ```bash
