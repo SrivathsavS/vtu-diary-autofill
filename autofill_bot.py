@@ -218,7 +218,7 @@ def ensure_logged_in():
 # INTERNSHIP SELECTION
 # ─────────────────────────────────────────────────────────────────────────────
 
-def select_internship():
+def select_internship(retries=3):
     """
     Open the internship dropdown and select the correct option.
 
@@ -227,34 +227,45 @@ def select_internship():
          text contains that keyword.
       2. Fall back to the FIRST available option (works for everyone who only
          has one internship registered in the portal).
+    Retries up to `retries` times if the dropdown doesn't load.
     """
-    intern_trigger = wait.until(EC.element_to_be_clickable((
-        By.XPATH,
-        "//button[@id='internship_id']"
-        " | //button[@role='combobox']"
-        " | //button[.//span[@data-slot='select-value']]"
-    )))
-    driver.execute_script("arguments[0].click();", intern_trigger)
-    time.sleep(0.8)
+    for attempt in range(1, retries + 1):
+        try:
+            intern_trigger = wait.until(EC.element_to_be_clickable((
+                By.XPATH,
+                "//button[@id='internship_id']"
+                " | //button[@role='combobox']"
+                " | //button[.//span[@data-slot='select-value']]"
+            )))
+            driver.execute_script("arguments[0].click();", intern_trigger)
+            time.sleep(1.5)
 
-    # Build the XPath: keyword-specific first, then first-option fallback
-    if INTERNSHIP_KEYWORD:
-        option_xpath = (
-            f"//*[@role='option' and contains(normalize-space(),'{INTERNSHIP_KEYWORD}')]"
-            f" | //*[@data-slot='select-item' and contains(normalize-space(),'{INTERNSHIP_KEYWORD}')]"
-            # fallback to first option if keyword not found
-            " | (//*[@role='option'])[1]"
-            " | (//*[@data-slot='select-item'])[1]"
-        )
-    else:
-        option_xpath = (
-            "(//*[@role='option'])[1]"
-            " | (//*[@data-slot='select-item'])[1]"
-        )
+            # Build the XPath: keyword-specific first, then first-option fallback
+            if INTERNSHIP_KEYWORD:
+                option_xpath = (
+                    f"//*[@role='option' and contains(normalize-space(),'{INTERNSHIP_KEYWORD}')]"
+                    f" | //*[@data-slot='select-item' and contains(normalize-space(),'{INTERNSHIP_KEYWORD}')]"
+                    # fallback to first option if keyword not found
+                    " | (//*[@role='option'])[1]"
+                    " | (//*[@data-slot='select-item'])[1]"
+                )
+            else:
+                option_xpath = (
+                    "(//*[@role='option'])[1]"
+                    " | (//*[@data-slot='select-item'])[1]"
+                )
 
-    intern_option = wait.until(EC.element_to_be_clickable((By.XPATH, option_xpath)))
-    driver.execute_script("arguments[0].click();", intern_option)
-    time.sleep(0.5)
+            intern_option = wait.until(EC.element_to_be_clickable((By.XPATH, option_xpath)))
+            driver.execute_script("arguments[0].click();", intern_option)
+            time.sleep(0.5)
+            return  # success
+        except Exception as e:
+            if attempt < retries:
+                print(f"    ⟳ Internship dropdown failed (attempt {attempt}/{retries}), retrying …")
+                driver.get(CREATE_URL)
+                time.sleep(SLEEP_PAGE_LOAD)
+            else:
+                raise
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -418,13 +429,17 @@ for idx, entry in enumerate(entries, start=1):
         )))
         driver.execute_script("arguments[0].click();", save_btn)
 
+        # Wait for the portal to finish saving (URL changes away from create page,
+        # or a success toast appears).
+        try:
+            WebDriverWait(driver, 30).until(
+                lambda d: CREATE_URL not in d.current_url
+            )
+        except Exception:
+            pass   # If it doesn't redirect, we still continue
+
         print(f"✔  Entry {idx}/{total} saved!")
         time.sleep(SLEEP_AFTER_SAVE)
-
-        # Navigate away so the next iteration starts clean
-        if CREATE_URL in driver.current_url:
-            driver.get(LIST_URL)
-            time.sleep(1.5)
 
     except Exception as e:
         print(f"\n{'!'*60}")
